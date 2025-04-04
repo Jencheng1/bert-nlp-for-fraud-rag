@@ -28,15 +28,77 @@ graph TD
 
 ## System Components
 
+### High-Level Architecture
+
+```mermaid
+graph TD
+    subgraph Frontend[Streamlit Frontend]
+        UI[User Interface]
+        Forms[Input Forms]
+        Viz[Visualizations]
+    end
+
+    subgraph Backend[FastAPI Backend]
+        API[API Endpoints]
+        Models[ML Models]
+        Store[Document Store]
+    end
+
+    subgraph Models[ML Models]
+        BERT[BERT Model]
+        GPT[GPT Model]
+        FAISS[FAISS Index]
+    end
+
+    subgraph Data[Data Layer]
+        DB[(Transaction Data)]
+        Cache[(Embedding Cache)]
+    end
+
+    UI --> Forms
+    Forms --> API
+    API --> Models
+    Models --> BERT
+    Models --> GPT
+    Models --> FAISS
+    BERT --> Store
+    GPT --> Store
+    Store --> DB
+    Store --> Cache
+```
+
+### Detailed Processing Flow
+
 ```mermaid
 graph LR
-    A[Input Text] --> B[Text Preprocessing]
-    B --> C[Embedding Generation]
-    C --> D[Similarity Search]
-    D --> E[Context Retrieval]
-    E --> F[Model Inference]
-    F --> G[Results Aggregation]
-    G --> H[Performance Metrics]
+    subgraph Input[Input Processing]
+        A[Raw Transaction] --> B[Text Preprocessing]
+        B --> C[Feature Extraction]
+    end
+
+    subgraph BERT_Flow[BERT Processing]
+        C --> D[Embedding Generation]
+        D --> E[FAISS Search]
+        E --> F[Similarity Scoring]
+    end
+
+    subgraph GPT_Flow[GPT Processing]
+        C --> G[Token Generation]
+        G --> H[Context Analysis]
+        H --> I[Confidence Scoring]
+    end
+
+    subgraph Results[Results Aggregation]
+        F --> J[Score Combination]
+        I --> J
+        J --> K[Final Decision]
+        K --> L[Performance Metrics]
+    end
+
+    style Input fill:#f9f,stroke:#333,stroke-width:2px
+    style BERT_Flow fill:#bbf,stroke:#333,stroke-width:2px
+    style GPT_Flow fill:#bfb,stroke:#333,stroke-width:2px
+    style Results fill:#fbb,stroke:#333,stroke-width:2px
 ```
 
 ## Model Comparison Flow
